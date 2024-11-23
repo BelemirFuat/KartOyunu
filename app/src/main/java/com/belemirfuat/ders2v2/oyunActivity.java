@@ -2,8 +2,10 @@ package com.belemirfuat.ders2v2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +31,7 @@ public class oyunActivity extends AppCompatActivity {
     Kart oncekiKart;
 
     int zorlukSeviyesi;
-
+    int hataHakki;
     boolean bekle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +40,37 @@ public class oyunActivity extends AppCompatActivity {
         setContentView(R.layout.activity_oyun);
         Intent actInt = getIntent();
         oyuncuIsim = actInt.getStringExtra("oyuncuIsim");
-        zorlukSeviyesi = actInt.getIntExtra("zorlukSeviyesi", 0);
+        zorlukSeviyesi = actInt.getIntExtra("zorlukSeviyesi", 1);
         bilgiTxt = findViewById(R.id.bilgiTxt);
         bilgiTxt.setText(oyuncuIsim + " Hoş Geldiniz.");
         grd = findViewById(R.id.grdLyt);
-        grd.setColumnCount(4);
-        grd.setRowCount(2);
-        int toplamSayi = 8;
+        int satirSayisi=2;
+        int sutunSayisi=2;
+        hataHakki = 10;
+        if(zorlukSeviyesi == 1)
+        {
+            satirSayisi = 2;
+            sutunSayisi = 3;
+            sureBaslat(10);
+
+        }else if(zorlukSeviyesi == 2)
+        {
+            satirSayisi = 3;
+            sutunSayisi = 4;
+            hataHakki = 15;
+            sureBaslat(15);
+
+        }else
+        {
+            sutunSayisi = 3;
+            satirSayisi = 6;
+            hataHakki = 25;
+            sureBaslat(20);
+
+        }
+        grd.setColumnCount(sutunSayisi);
+        grd.setRowCount(satirSayisi);
+        int toplamSayi = satirSayisi*sutunSayisi;
         kartlar = new Kart[toplamSayi];
         suankiKart = 0;
 
@@ -60,16 +86,23 @@ public class oyunActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v)
                 {
+                    if(bekle)
+                    {
+                        return;
+                    }
+                    bilgiTxt.setText("Hata Hakki : " + hataHakki);
+                    if(hataHakki < 0)
+                    {
+                        bilgiTxt.setText("Kaybettiniz");
+                        return;
+                    }
                     if(suankiKart==0)
                     {
                         kart.dondur();
                         suankiKart = kart.getId();
                     } else
                     {
-                        if(bekle)
-                        {
-                            return;
-                        }
+
                         bekle = true;
                         oncekiKart = findViewById(suankiKart);
                         if (oncekiKart.Mevcutdurum == Kart.KartDurumu.ACIK &&
@@ -90,6 +123,8 @@ public class oyunActivity extends AppCompatActivity {
                         }
                         else
                         {
+                            hataHakki--;
+
                             Handler h1 = new Handler();
                             h1.postDelayed(new Runnable(){
                                @Override
@@ -99,7 +134,7 @@ public class oyunActivity extends AppCompatActivity {
                                    suankiKart = 0;
                                    bekle = false;
                                }
-                            }, 2000);
+                            }, 700);
                         }
 
                         //suankiKart = 0;
@@ -123,5 +158,27 @@ public class oyunActivity extends AppCompatActivity {
         for(View v : kartDizisi)
             grd.addView(v);
 
+    }
+    public void sureBaslat(int zaman)
+    {
+        ProgressBar sureBar = findViewById(R.id.sureBr);
+        sureBar.setMax(zaman);
+        CountDownTimer timer = new CountDownTimer(zaman*1000, 1000) {
+        @Override
+            public void onTick(long millisUntilFinished)
+        {
+            int sure = (int)millisUntilFinished/1000;
+            sureBar.setProgress(sure, true);
+        }
+
+        @Override
+        public void onFinish()
+        {
+            Toast.makeText(getApplicationContext(), "Süre Doldu", Toast.LENGTH_SHORT).show();
+            bilgiTxt.setText("Süre Doldu Kaybettiniz");
+            bekle = true;
+        }
+        };
+        timer.start();
     }
 }
