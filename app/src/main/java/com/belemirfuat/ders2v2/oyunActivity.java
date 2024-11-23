@@ -28,6 +28,8 @@ public class oyunActivity extends AppCompatActivity {
 
     Kart oncekiKart;
 
+    int zorlukSeviyesi;
+
     boolean bekle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class oyunActivity extends AppCompatActivity {
         setContentView(R.layout.activity_oyun);
         Intent actInt = getIntent();
         oyuncuIsim = actInt.getStringExtra("oyuncuIsim");
+        zorlukSeviyesi = actInt.getIntExtra("zorlukSeviyesi", 0);
         bilgiTxt = findViewById(R.id.bilgiTxt);
         bilgiTxt.setText(oyuncuIsim + " Hoş Geldiniz.");
         grd = findViewById(R.id.grdLyt);
