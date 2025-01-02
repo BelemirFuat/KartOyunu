@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "393862437024",
+    "project_id": "kartuygulamasi-e908d",
+    "storage_bucket": "kartuygulamasi-e908d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393862437024:android:85db6397d6668e354791c5",
+        "android_client_info": {
+          "package_name": "com.belemirfuat.ders2v2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZsvMi8azJ1JHjX_ENODZLynkiakb8jhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
