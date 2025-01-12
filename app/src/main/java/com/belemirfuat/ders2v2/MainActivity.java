@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         Cursor cr = oyunDb.ayarlariOku();
         while(cr.moveToNext())
         {
-            Toast.makeText(this, "Ayar" + crs.getString(1), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Ayar" + cr.getString(1), Toast.LENGTH_SHORT).show();
         }
 
         askNotificationPermission();
