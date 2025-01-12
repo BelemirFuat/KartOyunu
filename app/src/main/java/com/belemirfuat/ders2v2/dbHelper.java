@@ -35,10 +35,16 @@ public class dbHelper extends SQLiteOpenHelper {
     public String isimOku()
     {
         SQLiteDatabase db = getReadableDatabase();
-        String sorgu = "Select id, name, value from ayarlar where name = 'isim";
+        String sorgu = "Select id, name, value from ayarlar where name = 'isim'";
         Cursor crs = db.rawQuery(sorgu, null);
         crs.moveToFirst();
         return crs.getString(2);
+    }
+
+    public void isimKaydet(String oyuncuIsim)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("UPDATE ayarlar set value = '"+ oyuncuIsim +"' where name = 'isim'");
     }
 
 

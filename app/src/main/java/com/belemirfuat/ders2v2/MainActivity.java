@@ -30,6 +30,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
+    dbHelper oyunDb;
+
     // Declare the launcher at the top of your Activity/Fragment:
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -69,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        oyunDb = new dbHelper(this);
+        Log.d("kullanıcıisim", oyunDb.isimOku());
 
         askNotificationPermission();
 
@@ -90,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         zorlukSeviyesi = 0;
         Button oynaBtn = findViewById(R.id.oyunaBaslaBtn);
         EditText isimEdt = findViewById(R.id.isimEdtTxt);
+        isimEdt.setText(oyunDb.isimOku());
         oynaBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -99,6 +104,10 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 String oyuncuIsim = isimEdt.getText().toString();
+                if(oyuncuIsim.length() > 3)
+                {
+                    oyunDb.isimKaydet(oyuncuIsim);
+                }
                 Intent actInt = new Intent(MainActivity.this,oyunActivity.class);
 
                 actInt.putExtra("oyuncuIsim",oyuncuIsim);
@@ -107,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(actInt);
             }
         });
+
         Button kolayBtn = findViewById(R.id.kolayBtn);
         kolayBtn.setBackgroundColor(Color.BLUE);
         Button ortaBtn = findViewById(R.id.ortaBtn);
