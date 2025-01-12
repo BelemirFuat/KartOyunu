@@ -49,7 +49,8 @@ public class dbHelper extends SQLiteOpenHelper {
     public void isimKaydet(String oyuncuIsim)
     {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("UPDATE ayarlar set value = '"+ oyuncuIsim +"' where name = 'isim'");
+        //db.execSQL("UPDATE ayarlar set value = '"+ oyuncuIsim +"' where name = 'isim'");
+        db.rawQuery("update ayarlar set value = @deger where name = 'isim", new String[]{oyuncuIsim});
     }
 
     public int zorlukSeviyesiOku()
@@ -64,6 +65,14 @@ public class dbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         String sevy = String.valueOf(seviye);
         db.execSQL("UPDATE ayarlar SET value = '"+sevy+"' where name ='zorlukSeviyesi'");
+    }
+
+    public Cursor ayarlariOku()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor crs = db.rawQuery("Select * from ayarlar", null);
+
+        return crs;
     }
 
 

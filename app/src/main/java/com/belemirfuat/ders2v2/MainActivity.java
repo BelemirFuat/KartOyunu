@@ -78,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("kullanıcıisim", String.valueOf(zorlukSeviye));
 
+
+        Cursor cr = oyunDb.ayarlariOku();
+        while(cr.moveToNext())
+        {
+            Toast.makeText(this, "Ayar" + crs.getString(1), Toast.LENGTH_SHORT).show();
+        }
+
         askNotificationPermission();
 
         FirebaseMessaging.getInstance().getToken()
