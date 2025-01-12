@@ -31,6 +31,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class MainActivity extends AppCompatActivity {
 
     dbHelper oyunDb;
+    public int zorlukSeviye;
 
     // Declare the launcher at the top of your Activity/Fragment:
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         });
         oyunDb = new dbHelper(this);
         Log.d("kullanıcıisim", oyunDb.isimOku());
+        zorlukSeviye = oyunDb.zorlukSeviyesiOku();
+
+        Log.d("kullanıcıisim", String.valueOf(zorlukSeviye));
 
         askNotificationPermission();
 
@@ -107,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 if(oyuncuIsim.length() > 3)
                 {
                     oyunDb.isimKaydet(oyuncuIsim);
+                } else
+                {
+                    Toast.makeText(getApplicationContext(), "oyuncu ismi 3 karakterden az olamaz", Toast.LENGTH_LONG).show();
                 }
                 Intent actInt = new Intent(MainActivity.this,oyunActivity.class);
 
@@ -156,9 +163,20 @@ public class MainActivity extends AppCompatActivity {
               zorBtn.setBackgroundColor(Color.BLUE);
 
             }
-
         });
+        oyunDb.zorlukSeviyesiKaydet(zorlukSeviyesi);
 
-
+        if(zorlukSeviye == 1)
+        {
+            kolayBtn.performClick();
+        }
+        else if(zorlukSeviye == 2)
+        {
+            ortaBtn.performClick();
+        }
+        else
+        {
+            zorBtn.performClick();
+        }
     }
 }

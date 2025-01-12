@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,7 +12,7 @@ import androidx.annotation.Nullable;
 public class dbHelper extends SQLiteOpenHelper {
 
     public static String DBNAME = "oyun.db";
-    public static int version = 1;
+    public static int version = 2;
     public dbHelper(Context cnt)
     {
         super(cnt, DBNAME, null, version);
@@ -29,7 +30,11 @@ public class dbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
-
+        Log.d("dbHelper", "onupgrade çağrıldı");
+        if(oldVersion == 1 && newVersion == 2)
+        {
+            db.execSQL("INSERT into ayarlar (name, value) values('zorlukSeviyesi', '2')");
+        }
     }
 
     public String isimOku()
@@ -45,6 +50,20 @@ public class dbHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("UPDATE ayarlar set value = '"+ oyuncuIsim +"' where name = 'isim'");
+    }
+
+    public int zorlukSeviyesiOku()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor crs = db.rawQuery("select value from ayarlar where name = 'zorlukSeviyesi'", null);
+        crs.moveToFirst();
+        return crs.getInt(0);
+    }
+    public void zorlukSeviyesiKaydet(int seviye)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        String sevy = String.valueOf(seviye);
+        db.execSQL("UPDATE ayarlar SET value = '"+sevy+"' where name ='zorlukSeviyesi'");
     }
 
 
