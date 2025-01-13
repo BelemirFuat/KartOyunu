@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 public class dbHelper extends SQLiteOpenHelper {
 
     public static String DBNAME = "oyun.db";
-    public static int version = 2;
+    public static int version = 3;
     public dbHelper(Context cnt)
     {
         super(cnt, DBNAME, null, version);
@@ -24,14 +24,14 @@ public class dbHelper extends SQLiteOpenHelper {
         db.execSQL("Create table ayarlar (ID INTEGER PRIMARY KEY AUTOINCREMENT, name STRING, value STRING)");
         db.execSQL("Create table skorlar (ID INTEGER PRIMARY KEY AUTOINCREMENT, username STRING, value INT)");
         db.execSQL("insert into ayarlar (name, value) values('isim', 'oyuncu') ");
-
+        db.execSQL("insert into ayarlar (name, value) values('zorlukSeviyesi', '2')");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         Log.d("dbHelper", "onupgrade çağrıldı");
-        if(oldVersion == 1 && newVersion == 2)
+        if(oldVersion == 2 && newVersion == 3)
         {
             db.execSQL("INSERT into ayarlar (name, value) values('zorlukSeviyesi', '2')");
         }
@@ -50,7 +50,7 @@ public class dbHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = getWritableDatabase();
         //db.execSQL("UPDATE ayarlar set value = '"+ oyuncuIsim +"' where name = 'isim'");
-        db.rawQuery("update ayarlar set value = @deger where name = 'isim", new String[]{oyuncuIsim});
+        db.rawQuery("update ayarlar set value = @deger where name = 'isim'", new String[]{oyuncuIsim});
     }
 
     public int zorlukSeviyesiOku()

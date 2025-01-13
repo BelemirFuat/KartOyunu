@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
@@ -33,10 +35,25 @@ public class oyunActivity extends AppCompatActivity {
     int zorlukSeviyesi;
     int hataHakki;
     boolean bekle;
+
+    public int kalanSure=0;
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("kalanSure", kalanSure);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        if(savedInstanceState != null)
+        {
+            kalanSure = savedInstanceState.getInt("kalanSure");
+            Log.d("KalanSure", String.valueOf(kalanSure));
+
+        }
         setContentView(R.layout.activity_oyun);
         Intent actInt = getIntent();
         oyuncuIsim = actInt.getStringExtra("oyuncuIsim");
@@ -163,12 +180,18 @@ public class oyunActivity extends AppCompatActivity {
     {
         ProgressBar sureBar = findViewById(R.id.sureBr);
         sureBar.setMax(zaman);
+        sureBar.setProgress(kalanSure, true);
+        if(kalanSure > 0)
+        {
+            zaman = kalanSure;
+        }
         CountDownTimer timer = new CountDownTimer(zaman*1000, 1000) {
         @Override
             public void onTick(long millisUntilFinished)
         {
             int sure = (int)millisUntilFinished/1000;
             sureBar.setProgress(sure, true);
+            kalanSure = sure;
         }
 
         @Override

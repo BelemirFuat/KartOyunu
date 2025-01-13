@@ -3,12 +3,14 @@ package com.belemirfuat.ders2v2;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.database.Cursor;
 
@@ -28,11 +30,22 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity {
 
     dbHelper oyunDb;
     public int zorlukSeviye;
+    TextView isimTxt;
 
     // Declare the launcher at the top of your Activity/Fragment:
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -63,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public int zorlukSeviyesi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
@@ -114,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         zorlukSeviyesi = 0;
         Button oynaBtn = findViewById(R.id.oyunaBaslaBtn);
         EditText isimEdt = findViewById(R.id.isimEdtTxt);
+        isimTxt = findViewById(R.id.isimTxt);
         isimEdt.setText(oyunDb.isimOku());
         oynaBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -131,12 +146,14 @@ public class MainActivity extends AppCompatActivity {
                 {
                     Toast.makeText(getApplicationContext(), "oyuncu ismi 3 karakterden az olamaz", Toast.LENGTH_LONG).show();
                 }
-                Intent actInt = new Intent(MainActivity.this,oyunActivity.class);
+                httpPost();
 
-                actInt.putExtra("oyuncuIsim",oyuncuIsim);
-                actInt.putExtra("zorlukSeviyesi",zorlukSeviyesi);
-
-                startActivity(actInt);
+//                Intent actInt = new Intent(MainActivity.this,oyunActivity.class);
+//
+//                actInt.putExtra("oyuncuIsim",oyuncuIsim);
+//                actInt.putExtra("zorlukSeviyesi",zorlukSeviyesi);
+//
+//                startActivity(actInt);
             }
         });
 
@@ -194,5 +211,57 @@ public class MainActivity extends AppCompatActivity {
         {
             zorBtn.performClick();
         }
+    }
+    public void kullaniciOku()
+    {
+        OkHttpClient istemci = new OkHttpClient();
+        Request istek = new Request.Builder().url("https://dbs.atauni.edu.tr/yazilim.php").build();
+        istemci.newCall(istek).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("Hata", "istek başarısız");
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("Başarılı", "İstek başarılı"+istek.toString());
+                String cevap = response.body().string();
+                isimTxt.setText(cevap);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        isimTxt.setText(cevap);
+                    }
+                });
+                }
+        });
+    }
+    public void httpPost()
+    {
+        OkHttpClient istemci = new OkHttpClient();
+        String content = "{\"name\":\"test\"}";
+        RequestBody govde = RequestBody.create(MediaType.parse("application/json"), content);
+        Request istek = new Request.Builder().url("https://dbs.atauni.edu.tr/yazilim.php")
+                .post(govde)
+                .build();
+        istemci.newCall(istek).enqueue(new Callback() {
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("Hata", "istek başarısız");
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("Başarılı", "İstek başarılı"+istek.toString());
+                String cevap = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        isimTxt.setText(cevap);
+                    }
+                });
+            }
+        });
     }
 }
