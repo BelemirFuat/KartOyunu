@@ -42,6 +42,7 @@ public class oyunActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("kalanSure", kalanSure);
+
     }
 
     @Override
